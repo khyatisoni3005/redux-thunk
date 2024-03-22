@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { addMovie } from '../store/action/MovieActions'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { addMovie, updateMovie } from '../store/action/MovieActions'
+import axios from 'axios'
 
 
 function MovieForm() {
+    const movieState = useSelector((state) => state.movies)
+    const movieId = movieState.viewMovieId
     const [movieData, setMovieData] = useState({
         name: "",
         director: ""
@@ -19,7 +22,32 @@ function MovieForm() {
 
     function addMovieData() {
         dispatch(addMovie(movieData))
+        setMovieData({
+            name: "",
+            director: "",
+            _id: "",
+        })
     }
+
+    function updateMovieData() {
+        dispatch(updateMovie(movieData))
+        setMovieData({
+            _id: "",
+            name: "",
+            director: ""
+        })
+    }
+
+    useEffect(() => {
+        if (movieId) {
+            axios.get(`http://localhost:5000/api/movie/view/${movieId}`)
+                .then((res) => {
+                    setMovieData(res.data)
+                })
+        }
+
+    }, [movieId])
+
     return (
         <>
 
@@ -37,11 +65,17 @@ function MovieForm() {
 
                     <button type="submit" onClick={() => {
                         if (movieData._id && movieData) {
-
+                            updateMovieData(movieData._id)
                         } else {
                             addMovieData()
                         }
-                    }} class="btn btn-primary">Submit</button>
+                    }} class="btn btn-primary">
+
+                        {
+                            movieData._id && movieData ? "update" : "add"
+                        }
+
+                    </button>
                 </div>
                 <div className="col-3"></div>
 

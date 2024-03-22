@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_MOVIE_LIST, POST_MOVIE, DELETE_MOVIE, PUT_MOVIE_LIST } from "../type";
+import { GET_MOVIE_LIST, POST_MOVIE, DELETE_MOVIE, PUT_MOVIE_LIST, VIEW_MOVIE_ID, UPDATE_MOVIE } from "../type";
 
 
 export const getMovieList = () => {
@@ -39,6 +39,28 @@ export const addMovie = (movieData) => {
             })
     }
 
+}
+
+export const viewMovieId = (movieId) => {
+    console.log("viewMovieId", movieId)
+    return {
+        type: VIEW_MOVIE_ID,
+        payload: movieId
+    }
+}
+
+export const updateMovie = (movieData) => {
+    return (dispatch) => {
+        axios.put(`http://localhost:5000/api/movie/update/${movieData._id}`, movieData)
+            .then((res) => {
+                let movieRecord = res.data
+                console.log("movieRecord", movieRecord)
+                dispatch({
+                    type: UPDATE_MOVIE,
+                    payload: movieRecord
+                })
+            })
+    }
 }
 
 // Inside MovieActions.js

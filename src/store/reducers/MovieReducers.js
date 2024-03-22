@@ -1,4 +1,4 @@
-import { GET_MOVIE_LIST, POST_MOVIE, DELETE_MOVIE, PUT_MOVIE_LIST } from "../type";
+import { GET_MOVIE_LIST, POST_MOVIE, DELETE_MOVIE, PUT_MOVIE_LIST, VIEW_MOVIE_ID, UPDATE_MOVIE } from "../type";
 import {
     UPDATE_MOVIE_SUCCESS,
     UPDATE_MOVIE_REQUEST,
@@ -10,7 +10,8 @@ import {
 let initialState = {
     movieList: [],
     error: null,
-    isLoading: null
+    isLoading: null,
+    viewMovieId: null
 }
 
 export const movieReducer = (state = initialState, action) => {
@@ -44,6 +45,25 @@ export const movieReducer = (state = initialState, action) => {
                 loading: false,
                 error: action.error,
             };
+
+        case VIEW_MOVIE_ID:
+            console.log("VIEW_MOVIE_ID", action.payload);
+            return {
+                ...state,
+                viewMovieId: action.payload
+            }
+        case UPDATE_MOVIE:
+            console.log("action.payload");
+            return {
+                ...state,
+                movieList: state.movieList.map((m) => {
+                    if (m._id === action.payload._id) {
+                        return action.payload
+                    }
+                    return m
+                }),
+                viewMovieId: null
+            }
         default: return state
     }
 }
